@@ -16,47 +16,54 @@ export default function ExpenseForm({ addExpense, itemToEdit, setItemToEdit }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!title || !amount) return;
-    addExpense(title, amount, itemToEdit?.id);
+    if (!title || !amount || Number(amount) <= 0) return;
+    addExpense(title, amount, itemToEdit?._id);
     setTitle('');
     setAmount('');
   };
 
   return (
-    <form onSubmit={handleSubmit} className="expense-form">
-      <label>Title</label>
-      <input
-        type="text"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        required
-      />
+    <div className="form-section">
+      <h3>Add Expense</h3>
+      <form onSubmit={handleSubmit} className="expense-form">
+        <label>Expense Description</label>
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="e.g., Rent, Groceries, Utilities"
+          required
+        />
 
-      <label>Amount</label>
-      <input
-        type="number"
-        value={amount}
-        onChange={(e) => setAmount(e.target.value)}
-        required
-      />
+        <label>Amount ($)</label>
+        <input
+          type="number"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          placeholder="Enter expense amount"
+          min="0"
+          step="0.01"
+          required
+        />
 
-      <div className="button-group">
-        <button type="submit">
-          {itemToEdit ? 'Update Expense' : 'Add Expense'}
-        </button>
-        {itemToEdit && (
-          <button
-            type="button"
-            onClick={() => {
-              setItemToEdit(null);
-              setTitle('');
-              setAmount('');
-            }}
-          >
-            Cancel
+        <div className="button-group">
+          <button type="submit" className="expense-btn">
+            {itemToEdit ? 'Update Expense' : 'Add Expense'}
           </button>
-        )}
-      </div>
-    </form>
+          {itemToEdit && (
+            <button
+              type="button"
+              onClick={() => {
+                setItemToEdit(null);
+                setTitle('');
+                setAmount('');
+              }}
+            >
+              Cancel
+            </button>
+          )}
+        </div>
+      </form>
+    </div>
   );
 }

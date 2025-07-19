@@ -7,11 +7,20 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "server": "nodemon server.cjs",
+    "client": "vite",
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "seed": "node seed.cjs"
   },
   "dependencies": {
     "axios": "^1.10.0",
+    "concurrently": "^9.2.0",
     "cors": "^2.8.5",
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0",
+    "mongoose": "^8.16.4",
+    "nodemon": "^3.1.10",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "uuid": "^11.1.0"
