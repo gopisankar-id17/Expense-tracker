@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Favicon Generator</title>
+    <style>
+        canvas { border: 1px solid #ccc; margin: 10px; }
+        .preview { display: inline-block; margin: 10px; text-align: center; }
+    </style>
+</head>
+<body>
+    <h1>Expense Tracker Favicon Generator</h1>
+    <div id="canvases"></div>
+    
+    <script>
+        function createRoundFavicon(size) {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, size, size);
+            
+            // Draw circular background
+            ctx.beginPath();
+            ctx.arc(size/2, size/2, size/2 - 2, 0, 2 * Math.PI);
+            ctx.fillStyle = '#4CAF50';
+            ctx.fill();
+            
+            // Add border
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // Draw dollar sign
+            ctx.fillStyle = 'white';
+            ctx.font = `bold ${size * 0.5}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('$', size/2, size/2 + size * 0.05);
+            
+            // Draw ET text
+            ctx.font = `bold ${size * 0.15}px Arial`;
+            ctx.fillText('ET', size/2, size/2 - size * 0.25);
+            
+            return canvas;
+        }
+        
+        const sizes = [16, 32, 48, 64, 128, 256];
+        const container = document.getElementById('canvases');
+        
+        sizes.forEach(size => {
+            const div = document.createElement('div');
+            div.className = 'preview';
+            
+            const canvas = createRoundFavicon(size);
+            canvas.title = `${size}x${size}`;
+            
+            const label = document.createElement('p');
+            label.textContent = `${size}x${size}`;
+            
+            const downloadLink = document.createElement('a');
+            downloadLink.href = canvas.toDataURL('image/png');
+            downloadLink.download = `favicon-${size}x${size}.png`;
+            downloadLink.textContent = 'Download';
+            downloadLink.style.display = 'block';
+            downloadLink.style.marginTop = '5px';
+            
+            div.appendChild(canvas);
+            div.appendChild(label);
+            div.appendChild(downloadLink);
+            container.appendChild(div);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Circular background -->
+  <circle cx="50" cy="50" r="48" fill="#4CAF50" stroke="#fff" stroke-width="4"/>
+  
+  <!-- Dollar sign -->
+  <text x="50" y="65" font-family="Arial, sans-serif" font-size="50" font-weight="bold" fill="white" text-anchor="middle">$</text>
+  
+  <!-- Small ET text -->
+  <text x="50" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle">ET</text>
+</svg>
