@@ -1,23 +1,23 @@
-export default function ExpenseSummary({ summary }) {
+export default function ExpenseSummary({ summary, currencySymbol = '$' }) {
   const { totalIncome = 0, totalExpenses = 0, balance = 0 } = summary;
 
   return (
     <div className="expense-summary">
-      <h3>Financial Summary</h3>
-      <div className="summary-grid">
-        <div className="summary-item income-summary">
-          <span className="label">Total Income:</span>
-          <span className="amount income">+${totalIncome.toFixed(2)}</span>
-        </div>
-        <div className="summary-item expense-summary">
-          <span className="label">Total Expenses:</span>
-          <span className="amount expense">-${totalExpenses.toFixed(2)}</span>
-        </div>
-        <div className="summary-item balance-summary">
-          <span className="label">Balance:</span>
-          <span className={`amount balance ${balance >= 0 ? 'positive' : 'negative'}`}>
-            ${balance.toFixed(2)}
-          </span>
+      <div className="summary-item">
+        <div className="summary-icon">💰</div>
+        <div className="summary-label">Total Income</div>
+        <div className="summary-amount">+{currencySymbol}{totalIncome.toFixed(2)}</div>
+      </div>
+      <div className="summary-item">
+        <div className="summary-icon">💸</div>
+        <div className="summary-label">Total Expenses</div>
+        <div className="summary-amount">-{currencySymbol}{totalExpenses.toFixed(2)}</div>
+      </div>
+      <div className="summary-item">
+        <div className="summary-icon">{balance >= 0 ? '📈' : '📉'}</div>
+        <div className="summary-label">Balance</div>
+        <div className={`summary-amount ${balance >= 0 ? 'positive' : 'negative'}`}>
+          {currencySymbol}{balance.toFixed(2)}
         </div>
       </div>
     </div>

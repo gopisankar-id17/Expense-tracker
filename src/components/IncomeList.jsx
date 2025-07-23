@@ -1,4 +1,4 @@
-export default function IncomeList({ income, deleteIncome, editIncome }) {
+export default function IncomeList({ income, deleteIncome, editIncome, currencySymbol = '$' }) {
   return (
     <div className="list-section">
       <h3>Income Sources</h3>
@@ -9,7 +9,7 @@ export default function IncomeList({ income, deleteIncome, editIncome }) {
           income.map((item) => (
             <li key={item._id} className="expense-item income-item">
               <div className="expense-info">
-                <strong>{item.title}</strong>: +${item.amount}
+                <strong>{item.title}</strong>: +{currencySymbol}{item.amount}
               </div>
               <div className="expense-actions">
                 <button onClick={() => editIncome(item)} className="edit-btn">Edit</button>
