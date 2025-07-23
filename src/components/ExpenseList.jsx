@@ -1,4 +1,4 @@
-export default function ExpenseList({ expenses, deleteExpense, editExpense }) {
+export default function ExpenseList({ expenses, deleteExpense, editExpense, currencySymbol = '$' }) {
   return (
     <div className="list-section">
       <h3>Expenses</h3>
@@ -9,7 +9,7 @@ export default function ExpenseList({ expenses, deleteExpense, editExpense }) {
           expenses.map((expense) => (
             <li key={expense._id} className="expense-item">
               <div className="expense-info">
-                <strong>{expense.title}</strong>: -${expense.amount}
+                <strong>{expense.title}</strong>: -{currencySymbol}{expense.amount}
               </div>
               <div className="expense-actions">
                 <button onClick={() => editExpense(expense)} className="edit-btn">Edit</button>

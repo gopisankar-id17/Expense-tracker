@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-export default function ExpenseForm({ addExpense, itemToEdit, setItemToEdit }) {
+export default function ExpenseForm({ addExpense, itemToEdit, setItemToEdit, currencySymbol = '$' }) {
   const [title, setTitle] = useState('');
   const [amount, setAmount] = useState('');
 
@@ -35,12 +35,12 @@ export default function ExpenseForm({ addExpense, itemToEdit, setItemToEdit }) {
           required
         />
 
-        <label>Amount ($)</label>
+        <label>Amount ({currencySymbol})</label>
         <input
           type="number"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
-          placeholder="Enter expense amount"
+          placeholder={`Enter amount in ${currencySymbol}`}
           min="0"
           step="0.01"
           required

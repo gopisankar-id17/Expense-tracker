@@ -24,6 +24,24 @@ const connectDB = async () => {
   }
 };
 
+// Income Schema
+const incomeSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  amount: {
+    type: Number,
+    required: true,
+    min: 0
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
+});
+
 // Expense Schema
 const expenseSchema = new mongoose.Schema({
   title: {
@@ -33,7 +51,8 @@ const expenseSchema = new mongoose.Schema({
   },
   amount: {
     type: Number,
-    required: true
+    required: true,
+    min: 0
   },
   createdAt: {
     type: Date,
@@ -41,6 +60,7 @@ const expenseSchema = new mongoose.Schema({
   }
 });
 
+const Income = mongoose.model('Income', incomeSchema);
 const Expense = mongoose.model('Expense', expenseSchema);
 
 // Routes
@@ -112,53 +132,92 @@ app.delete('/api/expenses/:id', async (req, res) => {
   }
 });
 
-// User Schema
-const userSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true, trim: true },
-  password: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now }
-});
+// ========== INCOME ROUTES ==========
 
-const User = mongoose.model('User', userSchema);
-
-const bcrypt = require('bcryptjs');
-
-// User Registration
-app.post('/api/auth/register', async (req, res) => {
+// GET all income
+app.get('/api/income', async (req, res) => {
   try {
-    const { username, password } = req.body;
-    if (!username || !password) {
-      return res.status(400).json({ message: 'Username and password are required' });
-    }
-    const existingUser = await User.findOne({ username });
-    if (existingUser) {
-      return res.status(409).json({ message: 'Username already exists' });
-    }
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({ username, password: hashedPassword });
-    await user.save();
-    res.status(201).json({ message: 'User registered successfully' });
+    const income = await Income.find().sort({ createdAt: -1 });
+    res.json(income);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
-// User Login
-app.post('/api/auth/login', async (req, res) => {
+// POST new income
+app.post('/api/income', async (req, res) => {
   try {
-    const { username, password } = req.body;
-    if (!username || !password) {
-      return res.status(400).json({ message: 'Username and password are required' });
+    const { title, amount } = req.body;
+    
+    if (!title || amount === undefined || Number(amount) <= 0) {
+      return res.status(400).json({ message: 'Title and positive amount are required' });
     }
-    const user = await User.findOne({ username });
-    if (!user) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+
+    const income = new Income({
+      title,
+      amount: Number(amount)
+    });
+
+    const savedIncome = await income.save();
+    res.status(201).json(savedIncome);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+// PUT update income
+app.put('/api/income/:id', async (req, res) => {
+  try {
+    const { title, amount } = req.body;
+    
+    const income = await Income.findByIdAndUpdate(
+      req.params.id,
+      { title, amount: Number(amount) },
+      { new: true, runValidators: true }
+    );
+
+    if (!income) {
+      return res.status(404).json({ message: 'Income not found' });
     }
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+
+    res.json(income);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+// DELETE income
+app.delete('/api/income/:id', async (req, res) => {
+  try {
+    const income = await Income.findByIdAndDelete(req.params.id);
+    
+    if (!income) {
+      return res.status(404).json({ message: 'Income not found' });
     }
-    res.json({ message: 'Login successful', user: { username: user.username, id: user._id } });
+
+    res.json({ message: 'Income deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// ========== SUMMARY ROUTE ==========
+
+// GET financial summary
+app.get('/api/summary', async (req, res) => {
+  try {
+    const income = await Income.find();
+    const expenses = await Expense.find();
+    
+    const totalIncome = income.reduce((sum, item) => sum + item.amount, 0);
+    const totalExpenses = expenses.reduce((sum, item) => sum + item.amount, 0);
+    const balance = totalIncome - totalExpenses;
+    
+    res.json({
+      totalIncome,
+      totalExpenses,
+      balance
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
